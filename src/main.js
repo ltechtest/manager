@@ -16,12 +16,16 @@ app.on('ready', _ => {
     vibrancy: 'light',
     tabbingIdentifier: 'tab',
     scrollBounce: true,
-    background: '#000',
-    // show: false,
+    show: false
   })
 
   mainWindow.loadURL(`file://${__dirname}/main.html`)
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
+
+  mainWindow.on('ready-to-show', _ => {
+    mainWindow.show()
+    mainWindow.focus()
+  })
 
   const template = [
     {

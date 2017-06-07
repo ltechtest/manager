@@ -1,23 +1,34 @@
 import React, { Component } from 'react'
-import './style.sass'
+// import './style.sass'
 import { Link } from 'react-router-dom'
+
+// import rest from 'npm-rest'
 
 import { IndexRoute, Route } from 'react-router'
 
-function Test() {
+function Task({ t }) {
   return (
-    <Link to='/'><h2>I AM HERE <input/></h2></Link>
+    <li>{t}</li>
   )
 }
 
 
 export default class App2 extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      tasks: [1, 2, 3]
+    }
+  }
+
   render() {
     return (
       <div className='container'>
-        <h1>testing2222</h1>
-        <Link to='/test/test2'>test link2</Link>
-        <Route path="/test/test2" component={Test}/>
+        <ul>
+          {this.state.tasks.map(task => <Task key={task} t={task} />)}
+        </ul>
+        <Link to='/'>Back</Link>
       </div>
     )
   }
