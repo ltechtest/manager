@@ -1,60 +1,74 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import './style.sass'
+import { ipcRenderer } from 'electron'
 
 import { Link } from 'react-router-dom'
 
-export class Tabs extends Component {
+import './style.sass'
+
+class Tabs extends Component {
   render() {
-    let { tabs, active, add, setActive } = this.props
+    let { tabs, tabFocus, openNewTab, setFocus } = this.props
 
     return (
       <section id="page-tabs">
-        {tabs.map(item => (
+        {tabs.map((item, index) => (
           <div
-            key={item}
-            className={`tab ${active === item && 'active'}`}
-            onClick={() => setActive(item)}
+            key={index}
+            className={`tab ${tabFocus === index && 'active'}`}
+            onClick={() => setFocus(index)}
+            title={item.title}
           >
-            Soundcloud [{item}]
+            {item.title}
           </div>
         ))}
-        <button className="add-new-tab" onClick={add}>+</button>
+        <button className="add-new-tab" onClick={openNewTab}>+</button>
       </section>
     )
   }
 }
 
-export default class Header extends Component {
-  constructor() {
-    super()
-
-    this.state = {
-      active: 0,
-      tabs: [0]
-    }
-  }
-
-  setActive(active) {
-    this.setState({ active })
-  }
-
-  add() {
-    this.setState({
-      tabs: [...this.state.tabs, this.state.tabs.length]
-    })
+class Header extends Component {
+  componentDidMount() {
+    ipcRenderer.send('register-shortcut', 'test')
+    ///// https://github.com/electron/electron/issues/1095
+    // invoke function via assignin remote variable
   }
 
   render() {
     return (
       <header>
-        <h1>Managerss {this.state.active}</h1>
+        <h1>Manager {this.props.tabFocus}</h1>
         <Tabs
-          add={this.add.bind(this)}
-          setActive={this.setActive.bind(this)}
-          {...this.state}
+          {...this.props}
         />
       </header>
     )
   }
 }
+
+function mapStateToProps({ tabs }) {
+  return {
+    ...tabs
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setFocus(value) {
+      dispatch({
+        type: 'SET_FOCUS',
+        value
+      })
+    },
+
+    openNewTab() {
+      dispatch({
+        type: 'OPEN_NEW_TAB'
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

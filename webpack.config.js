@@ -15,6 +15,7 @@ module.exports = {
       },
       {
         test: /\.s(a|c)ss$/,
+        exclude: /node_modules/,
         use: [{
           loader: "style-loader"
         }, {
@@ -25,6 +26,12 @@ module.exports = {
       }
     ],
   },
+
+  plugins: [
+    new webpack.ExternalsPlugin('commonjs', [
+      'electron'
+    ])
+  ],
 
   output: {
     filename: "bundle.js",

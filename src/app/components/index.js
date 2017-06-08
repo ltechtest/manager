@@ -1,15 +1,24 @@
 import React, { Component } from 'react'
-
-import './fonts.sass'
+import { connect } from 'react-redux'
 
 import Header from './header'
+import './fonts.sass'
 
-export default class App extends Component {
+class App extends Component {
   render() {
+    let { incrementActive, active } = this.props
+
+    console.log(active)
+
     return (
       <div className='container'>
         <Header />
+        <div className="app-content">
+          test
+        </div>
       </div>
     )
   }
 }
+
+export default connect()(App)

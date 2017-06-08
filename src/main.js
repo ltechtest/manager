@@ -1,6 +1,9 @@
-const electron = require('electron')
 const path = require('path')
-const { app, Tray, Menu, BrowserWindow } = electron
+const electron = require('electron')
+
+const {
+  app, Tray, Menu, BrowserWindow, ipcMain, globalShortcut
+} = electron
 
 let mainWindow
 
@@ -16,11 +19,31 @@ app.on('ready', _ => {
     vibrancy: 'light',
     tabbingIdentifier: 'tab',
     scrollBounce: true,
-    show: false
+    show: false,
+    webPreferences: {
+      experimentalFeatures: true
+    }
   })
 
+  app.commandLine.appendSwitch('force-gpu-rasterization')
   mainWindow.loadURL(`file://${__dirname}/main.html`)
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
+
+  ipcMain.on('register-shortcut', (event, cb, cb2) => {
+    console.log(event, cb, cb2)
+    if (globalShortcut.isRegistered('CommandOrControl+T')) {
+      return event.sender.send('register-shortcut-failed', 'registered')
+    }
+
+    let registration = globalShortcut.register('CommandOrControl+T', () => {
+      console.log(cb)
+      console.log('C+T', cb())
+    })
+
+    if (!registration) {
+      return event.sender.send('register-shortcut-failed', registration)
+    }
+  })
 
   mainWindow.on('ready-to-show', _ => {
     mainWindow.show()
@@ -53,4 +76,9 @@ app.on('ready', _ => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
     tray.setTitle('+1')
   })
+})
+
+app.on('will-quit', () => {
+  // Unregister all shortcuts.
+  globalShortcut.unregisterAll()
 })
