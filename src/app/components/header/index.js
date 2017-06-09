@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 
 import { Link } from 'react-router-dom'
 
@@ -31,9 +31,8 @@ class Tabs extends Component {
 
 class Header extends Component {
   componentDidMount() {
-    ipcRenderer.send('register-shortcut', 'test')
-    ///// https://github.com/electron/electron/issues/1095
-    // invoke function via assignin remote variable
+    ipcRenderer.send('register-shortcut', 'CommandOrControl+T', 'openNewTab')
+    ipcRenderer.on('trigger-shortcut:openNewTab', this.props.openNewTab)
   }
 
   render() {

@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "concurrently": "^3.4.0",
+    "electron-localshortcut": "^2.0.0",
     "history": "^4.6.1",
     "npm-rest": "0.0.23",
     "react": "^15.5.4",

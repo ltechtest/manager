@@ -1,5 +1,6 @@
 const path = require('path')
 const electron = require('electron')
+const localShortcut = require('electron-localshortcut')
 
 const {
   app, Tray, Menu, BrowserWindow, ipcMain, globalShortcut
@@ -29,19 +30,24 @@ app.on('ready', _ => {
   mainWindow.loadURL(`file://${__dirname}/main.html`)
   mainWindow.webContents.openDevTools()
 
-  ipcMain.on('register-shortcut', (event, cb, cb2) => {
-    console.log(event, cb, cb2)
-    if (globalShortcut.isRegistered('CommandOrControl+T')) {
-      return event.sender.send('register-shortcut-failed', 'registered')
+  // place for storing shortcuts
+  mainWindow.shortcut = {
+
+  }
+
+  ipcMain.on('register-shortcut', (event, sCode, sFuncName) => {
+    let errorKey = 'register-shortcut-failed:' + sFuncName
+
+    if (localShortcut.isRegistered(mainWindow, sCode)) {
+      return event.sender.send(errorKey, 'already registered')
     }
 
-    let registration = globalShortcut.register('CommandOrControl+T', () => {
-      console.log(cb)
-      console.log('C+T', cb())
+    let registration = localShortcut.register(mainWindow, sCode, () => {
+      event.sender.send('trigger-shortcut:' + sFuncName, 'sCode', mainWindow)
     })
 
     if (!registration) {
-      return event.sender.send('register-shortcut-failed', registration)
+      return event.sender.send(errorKey, registration)
     }
   })
 
@@ -80,5 +86,5 @@ app.on('ready', _ => {
 
 app.on('will-quit', () => {
   // Unregister all shortcuts.
-  globalShortcut.unregisterAll()
+  localShortcut.unregisterAll(mainWindow)
 })
