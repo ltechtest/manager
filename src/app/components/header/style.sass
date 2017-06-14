@@ -60,26 +60,63 @@ body
       flex-wrap: nowrap
 
       .tab
+        position: relative
+        cursor: pointer
+        transition: all 0.5s ease
+
         flex-grow: 1
         flex-basis: 0
-        text-align: center
-        cursor: pointer
+
         max-width: 50%
-        transition: all 0.5s ease
-        font-size: 12px
         padding: 5px
+
         border: 1px solid transparent
         border-top: none
         border-bottom: none
 
+        font-size: 12px
+        text-align: center
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+
+        .close-tab-wrapper
+          position: absolute
+          padding-top: 1px
+          padding: 2px
+          background: none
+          width: 14px
+          top: 3px
+          left: 4px
+          border-radius: 2px
+          cursor: pointer
+          transition: background 0.2s ease
+
+          .close-icon
+            opacity: 0
+            transition: opacity 0.2s ease
+
+          &.active .close-icon
+            opacity: 0.8
+
+          &:hover
+            background: rgba(0, 0, 0, 0.5)
+
+            .close-icon
+              opacity: 1
+
         &:hover
           background: #424242
+
+          .close-icon
+            opacity: 0.5
 
         &.active
           flex-grow: 2
           background: #484848
           border-color: black
           cursor: default
+
 
       button.add-new-tab
         outline: none

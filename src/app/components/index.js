@@ -2,23 +2,18 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import Header from './header'
+import AppContent from './app-content'
 import './fonts.sass'
 
 class App extends Component {
   render() {
-    let { incrementActive, active } = this.props
-
-    console.log(active)
-
     return (
       <div className='container'>
         <Header />
-        <div className="app-content">
-          test
-        </div>
+        <AppContent />
       </div>
     )
   }
 }
 
-export default connect()(App)
+export default connect(store => store)(App)

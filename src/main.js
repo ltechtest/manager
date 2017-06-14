@@ -30,11 +30,6 @@ app.on('ready', _ => {
   mainWindow.loadURL(`file://${__dirname}/main.html`)
   mainWindow.webContents.openDevTools()
 
-  // place for storing shortcuts
-  mainWindow.shortcut = {
-
-  }
-
   ipcMain.on('register-shortcut', (event, sCode, sFuncName) => {
     let errorKey = 'register-shortcut-failed:' + sFuncName
 
@@ -54,6 +49,10 @@ app.on('ready', _ => {
   mainWindow.on('ready-to-show', _ => {
     mainWindow.show()
     mainWindow.focus()
+  })
+
+  mainWindow.on('close', _ => {
+    app.quit()
   })
 
   const template = [

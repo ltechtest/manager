@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 
 import { ipcRenderer } from 'electron'
 
-import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 
 import { createHashHistory } from 'history'
@@ -14,79 +13,12 @@ import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-ro
 import App from './components'
 import App2 from './components/app2'
 
+import createStore from './store'
+
 const history = createHashHistory()
 const middleware = routerMiddleware(history)
 
-const runningInstances = [
-  {
-    instanceId: 101,
-    instance: {
-      restInstance: true
-    }
-  }
-]
-
-const defaultState = {
-  tabFocus: 0,
-  tabs: [
-    {
-      title: 'SoundCloud [deadjapan]',
-      instanceId: 101,
-      // we can not keep a link to the instance, because the instance is mutable
-      // so we are keeping the id of the instance in a special array
-      hasNotifications: false,
-      hasErrors: false,
-    }
-  ],
-  instanceData: {
-    101: {
-      followers: [1, 2, 3]
-    }
-  }
-}
-
-const tabsReducer = (state = defaultState, { type, value }) => {
-  switch(type) {
-    case 'SET_FOCUS':
-      return { ...state, tabFocus: value }
-
-    case 'OPEN_NEW_TAB':
-      let openedTabIndex = state.tabs.findIndex(el => el.instanceId === null)
-
-      if (openedTabIndex !== -1) {
-        // switches to already opened new tab instead of creating a new one
-        return {
-          ...state,
-          tabFocus: openedTabIndex
-        }
-      }
-
-      let newTabs = [
-        ...state.tabs,
-        {
-          title: 'New Tab',
-          instanceId: null
-        }
-      ]
-
-      return {
-        ...state,
-        tabs: newTabs,
-        tabFocus: newTabs.length - 1
-      }
-
-    default:
-      return state
-  }
-}
-
-const store = createStore(
-  combineReducers({
-    router: routerReducer,
-    tabs: tabsReducer
-  }),
-  applyMiddleware(middleware)
-)
+const store = createStore(middleware, { routerReducer })
 
 ReactDOM.render(
   <Provider store={store}>
