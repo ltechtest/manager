@@ -1,8 +1,8 @@
-export default function content(state, runningInstances) {
+export default function content(fullState, runningInstances) {
   let defaultState = {
-    authData: state.authData,
-    instanceData: state.instanceData,
-    tabFocus: state.tabFocus
+    authData: fullState.authData,
+    instanceData: fullState.instanceData,
+    tabFocus: fullState.tabFocus
   }
 
   return (state = defaultState, { type, value }) => {

@@ -11,6 +11,8 @@ import { Redirect, HashRouter } from 'react-router-dom'
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 
 import App from './components'
+import Header from './components/header'
+import Settings from './components/settings'
 
 import createStore from './store'
 
@@ -22,9 +24,10 @@ const store = createStore(middleware, { routerReducer })
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <div>
+      <div className='container'>
+        <Route path="/" component={Header}/>
         <Route exact path="/" component={App}/>
-        <Route path="/test" component={App}/>
+        <Route path="/settings" component={Settings}/>
       </div>
     </ConnectedRouter>
   </Provider>,

@@ -24,6 +24,8 @@ const defaultState = {
   appState: 'LOADING',
   appError: null,
 
+  services: [],
+
   tabFocus: 0,
   tabs: [
     {
@@ -40,6 +42,7 @@ const defaultState = {
   authData: {
 
   },
+
   instanceData: {
     101: {
       followers: [1, 2, 3]
@@ -47,45 +50,56 @@ const defaultState = {
   }
 }
 
+const getAppData = (store, DB) => {
+  DB.services.toArray().then(value => {
+    store.dispatch({ type: 'LOAD_SERVICES', value })
+  })
+
+  DB.auth_data.toArray().then(value => {
+    store.dispatch({ type: 'LOAD_AUTH_DATA', value })
+  })
+
+  store.dispatch({ type: 'UPDATE_APP_STATE', value: 'READY' })
+}
+
 const getReducersList = DB => ({
-  appState: appState(DB, defaultState, runningInstances),
+  app: appState(DB, defaultState, runningInstances),
   tabs: tabs(defaultState, runningInstances),
   content: content(defaultState, runningInstances),
   restSequencer: restSequencer(DB, defaultState, runningInstances)
 })
 
 export default (middleware, { ...reducers }) => {
-  let db = createDB(appName)
+  let DB = createDB(appName)
   let store = createStore(
     combineReducers({
-      appState: appState(db, defaultState, runningInstances),
+      app: appState(DB, defaultState, runningInstances),
     }),
     composeWithDevTools(applyMiddleware(middleware))
   )
 
-
-  db.on('ready', event => {
+  DB.on('ready', event => {
     store.replaceReducer(
-      combineReducers(getReducersList(db))
+      combineReducers(getReducersList(DB))
     )
 
-    store.dispatch({ type: 'UPDATE_APP_STATE', appState: 'READY' })
+    getAppData(store, DB)
   })
 
   let failedDBCallback = appError => {
     store.dispatch({
       type: 'UPDATE_APP_STATE',
-      appState: 'ERROR',
+      value: 'ERROR',
       appError
     })
   }
 
-  db.on('populate', _ => {
+  DB.on('populate', _ => {
     store.dispatch({ type: 'POPULATE_STORE_AND_DB' })
   })
 
-  db.open().catch(failedDBCallback)
-  db.on('blocked', failedDBCallback)
+  DB.open().catch(failedDBCallback)
+  DB.on('blocked', failedDBCallback)
 
   return store
 }

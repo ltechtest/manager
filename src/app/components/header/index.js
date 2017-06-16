@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 import { ipcRenderer, remote } from 'electron'
 
@@ -101,6 +102,10 @@ class Header extends Component {
   }
 
   render() {
+    if (this.props.app.appState === 'LOADING') {
+      return <noscript>Loading</noscript>
+    }
+
     return (
       <header>
         <h1>Manager {this.props.tabFocus}</h1>
@@ -112,9 +117,10 @@ class Header extends Component {
   }
 }
 
-function mapStateToProps({ tabs }) {
+function mapStateToProps({ tabs, app }) {
   return {
-    ...tabs
+    ...tabs,
+    app
   }
 }
 
@@ -137,6 +143,7 @@ function mapDispatchToProps(dispatch) {
       dispatch({
         type: 'OPEN_NEW_TAB'
       })
+      dispatch(push('/'))
     },
 
     closeCurrentTab() {

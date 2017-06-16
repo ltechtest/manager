@@ -10,15 +10,15 @@ let bot = rest.new({
   }
 })
 
-bot.run()
-
 export default function restSequencer(db, defaultState, runningInstances) {
   console.log(db)
 
   return (state = defaultState, { type, value }) => {
     switch (type) {
-      case 'GET_AUTH_URL':
-        return
+      case 'RUN_BOT':
+        bot.run()
+
+        return state
 
       default:
         return state

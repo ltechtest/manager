@@ -74,8 +74,7 @@ export default function soundcloudAdapter(restSettings) {
     },
 
     authorization: {
-      async: true,
-      manual: false
+      manual: true
     },
 
     methods: {

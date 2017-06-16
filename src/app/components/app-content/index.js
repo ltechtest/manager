@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 import { ipcRenderer, remote } from 'electron'
 
@@ -9,16 +10,28 @@ import './style.sass'
 
 class NewTab extends Component {
   render() {
-    let { currentTab, chooseInstanceForTheTab } = this.props
+    let {
+      app: { services },
+      currentTab,
+      chooseInstanceForTheTab
+    } = this.props
 
     if (!currentTab || currentTab.instanceId !== null) {
       return <noscript/>
     }
 
+    console.log(services);
+
     return (
       <div>
-        <a onClick={() => chooseInstanceForTheTab('sc')}>SC</a>
-        <a onClick={() => chooseInstanceForTheTab('insta')}>insta</a>
+        {services.map(service => (
+          <div
+            key={service.id}
+            onClick={() => chooseInstanceForTheTab(service.serviceName)}
+          >
+            {service.serviceName}
+          </div>
+        ))}
       </div>
     )
   }
@@ -64,6 +77,7 @@ function mapDispatchToTabsProps(dispatch) {
         type: 'CREATE_NEW_INSTANCE',
         value
       })
+      dispatch(push('/settings/' + value))
     }
   }
 }

@@ -1,14 +1,36 @@
-export default (DB, defaultState) => {
-  return (state = defaultState.appState, { type, appState, appError }) => {
+export default (DB, fullState) => {
+  let defaultState = {
+    appState: fullState.appState,
+    appError: fullState.appError,
+    services: fullState.services
+  }
+
+  return (state = defaultState, { type, value, appError }) => {
     switch (type) {
       case 'UPDATE_APP_STATE':
-        return { appState, appError }
+        return {
+          ...state,
+          appState: value,
+          appError
+        }
+
+      case 'LOAD_SERVICES':
+        return {
+          ...state,
+          services: value
+        }
+
+      case 'LOAD_AUTH_DATA':
+        return {
+          ...state,
+          authData: value
+        }
 
       case 'POPULATE_STORE_AND_DB':
         let services = ['instagram', 'soundcloud', 'twitter']
 
-        services.forEach((service_name, id) => {
-          DB.services.add({ id, service_name })
+        services.forEach((serviceName, id) => {
+          DB.services.add({ id, serviceName })
         })
 
         return {
