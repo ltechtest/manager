@@ -1,4 +1,10 @@
-export default function content(defaultState, runningInstances) {
+export default function content(state, runningInstances) {
+  let defaultState = {
+    authData: state.authData,
+    instanceData: state.instanceData,
+    tabFocus: state.tabFocus
+  }
+
   return (state = defaultState, { type, value }) => {
     switch(type) {
       case 'SET_FOCUS':

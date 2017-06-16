@@ -11,7 +11,6 @@ import { Redirect, HashRouter } from 'react-router-dom'
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 
 import App from './components'
-import App2 from './components/app2'
 
 import createStore from './store'
 
@@ -25,7 +24,7 @@ ReactDOM.render(
     <ConnectedRouter history={history}>
       <div>
         <Route exact path="/" component={App}/>
-        <Route path="/test" component={App2}/>
+        <Route path="/test" component={App}/>
       </div>
     </ConnectedRouter>
   </Provider>,

@@ -9,12 +9,19 @@ let bot = rest.new({
     manual: false
   }
 })
-console.log(bot, rest)
+
 bot.run()
 
-export default function restSequencer(defaultState, runningInstances) {
-  return (state = defaultState, { type, value }) => {
-    return state
+export default function restSequencer(db, defaultState, runningInstances) {
+  console.log(db)
 
+  return (state = defaultState, { type, value }) => {
+    switch (type) {
+      case 'GET_AUTH_URL':
+        return
+
+      default:
+        return state
+      }
   }
 }

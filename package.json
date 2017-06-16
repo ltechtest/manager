@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "concurrently": "^3.4.0",
+    "dexie": "^1.5.1",
     "electron-localshortcut": "^2.0.0",
     "history": "^4.6.1",
     "node-soundcloud": "0.0.6",

@@ -68,7 +68,9 @@ function closeTab(state, tabIndex) {
   }
 }
 
-export default function tabs(defaultState, runningInstances) {
+export default function tabs({ tabs, tabFocus }, runningInstances) {
+  let defaultState = { tabs, tabFocus }
+
   return (state = defaultState, { type, value }) => {
     switch (type) {
       case 'CREATE_NEW_INSTANCE':
